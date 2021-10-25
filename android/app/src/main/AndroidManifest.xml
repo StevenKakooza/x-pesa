@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.xpesa">
+    package="com.example.usfp">
    <application
-        android:label="xpesa"
+        android:label="USFP"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

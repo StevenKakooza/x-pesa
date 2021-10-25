@@ -1,4 +1,4 @@
-package com.example.xpesa
+package com.example.usfp
 
 import io.flutter.embedding.android.FlutterActivity
 
