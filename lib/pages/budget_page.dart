@@ -19,7 +19,7 @@ class _BudgetPageState extends State<BudgetPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0),
         child: Container(
-          decoration: BoxDecoration(color: white, boxShadow: [
+          decoration: BoxDecoration(color: primary, boxShadow: [
             BoxShadow(
               color: grey.withOpacity(0.01),
               spreadRadius: 10,
@@ -43,18 +43,22 @@ class _BudgetPageState extends State<BudgetPage> {
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: black),
+                          color: white),
                     ),
                     Row(
                       children: [
                         Icon(
                           Icons.add,
                           size: 25,
+                          color: white,
                         ),
                         SizedBox(
                           width: 20,
                         ),
-                        Icon(AntDesign.search1)
+                        Icon(
+                          AntDesign.search1,
+                          color: white,
+                        )
                       ],
                     )
                   ],

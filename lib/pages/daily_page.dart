@@ -11,7 +11,17 @@ class DailyPage extends StatefulWidget {
 }
 
 class _DailyPageState extends State<DailyPage> {
+  var x;
+  @override
+  void initState() {
+    super.initState();
+    x = 0;
+  }
+
   int activeDay = 3;
+
+  List trns =
+      daily.where((element) => element['day'] == days[3]['day']).toList();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +30,7 @@ class _DailyPageState extends State<DailyPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(155.0),
         child: Container(
-          decoration: BoxDecoration(color: white, boxShadow: [
+          decoration: BoxDecoration(color: primary, boxShadow: [
             BoxShadow(
               color: grey.withOpacity(0.01),
               spreadRadius: 10,
@@ -40,9 +50,12 @@ class _DailyPageState extends State<DailyPage> {
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: black),
+                          color: white),
                     ),
-                    Icon(AntDesign.search1)
+                    Icon(
+                      Ionicons.md_stats,
+                      color: white,
+                    )
                   ],
                 ),
                 SizedBox(
@@ -55,6 +68,11 @@ class _DailyPageState extends State<DailyPage> {
                         onTap: () {
                           setState(() {
                             activeDay = index;
+                            x = 0;
+                            trns = daily
+                                .where((element) =>
+                                    element['day'] == days[activeDay]['day'])
+                                .toList();
                           });
                         },
                         child: Container(
@@ -63,7 +81,7 @@ class _DailyPageState extends State<DailyPage> {
                             children: [
                               Text(
                                 days[index]['label'],
-                                style: TextStyle(fontSize: 10),
+                                style: TextStyle(fontSize: 10, color: white),
                               ),
                               SizedBox(
                                 height: 10,
@@ -73,13 +91,13 @@ class _DailyPageState extends State<DailyPage> {
                                 height: 30,
                                 decoration: BoxDecoration(
                                     color: activeDay == index
-                                        ? primary
+                                        ? white
                                         : Colors.transparent,
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                         color: activeDay == index
                                             ? primary
-                                            : black.withOpacity(0.1))),
+                                            : white.withOpacity(0.2))),
                                 child: Center(
                                   child: Text(
                                     days[index]['day'],
@@ -87,7 +105,7 @@ class _DailyPageState extends State<DailyPage> {
                                         fontSize: 10,
                                         fontWeight: FontWeight.w600,
                                         color:
-                                            activeDay == index ? white : black),
+                                            activeDay == index ? black : white),
                                   ),
                                 ),
                               )
@@ -107,132 +125,149 @@ class _DailyPageState extends State<DailyPage> {
   Widget getBody() {
     var size = MediaQuery.of(context).size;
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Column(
-                children: List.generate(daily.length, (index) {
+      child: FutureBuilder(
+          future: Future.delayed(Duration(seconds: 2), () {
+            x = 2;
+          }),
+          builder: (context, y) {
+            if (x == 2) {
               return Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: (size.width - 40) * 0.7,
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: grey.withOpacity(0.1),
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  daily[index]['icon'],
-                                  width: 30,
-                                  height: 30,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 15),
-                            Container(
-                              width: (size.width - 90) * 0.5,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    daily[index]['name'],
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: black,
-                                        fontWeight: FontWeight.w500),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    daily[index]['date'],
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: black.withOpacity(0.5),
-                                        fontWeight: FontWeight.w400),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: (size.width - 40) * 0.3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              daily[index]['price'],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Colors.green),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                  SizedBox(
+                    height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 65, top: 8),
-                    child: Divider(
-                      thickness: 0.8,
-                    ),
-                  )
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Column(
+                        children: trns.length > 0
+                            ? List.generate(trns.length, (index) {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: (size.width - 40) * 0.7,
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: 50,
+                                                height: 50,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: grey.withOpacity(0.1),
+                                                ),
+                                                child: Center(
+                                                  child: Image.asset(
+                                                    daily[index]['icon'],
+                                                    width: 30,
+                                                    height: 30,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 15),
+                                              Container(
+                                                width: (size.width - 90) * 0.5,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      daily[index]['name'],
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: black,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      daily[index]['date'],
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: black
+                                                              .withOpacity(0.5),
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          width: (size.width - 40) * 0.3,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                daily[index]['price'],
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 15,
+                                                    color: Colors.green),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 65, top: 8),
+                                      child: Divider(
+                                        thickness: 0.8,
+                                      ),
+                                    )
+                                  ],
+                                );
+                              })
+                            : [
+                                SizedBox(
+                                  height: 40,
+                                ),
+                                Center(
+                                  child: Icon(
+                                    Icons.emoji_people_outlined,
+                                    size: 60,
+                                    color: Colors.grey.withOpacity(.5),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  'No Transactions here',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: black,
+                                      fontWeight: FontWeight.w500),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ]),
+                  ),
                 ],
               );
-            })),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              children: [
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: Text(
-                    "Total",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: black.withOpacity(0.4),
-                        fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
+            } else {
+              return Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .35,
                   ),
-                ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Text(
-                    "\$1780.00",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: black,
-                        fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+                  Center(child: CircularProgressIndicator()),
+                ],
+              );
+            }
+          }),
     );
   }
 }

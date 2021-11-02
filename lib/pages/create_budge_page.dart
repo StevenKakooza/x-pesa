@@ -1,9 +1,10 @@
 import 'package:USFP/json/create_budget_json.dart';
 import 'package:USFP/json/day_month.dart';
+import 'package:USFP/helpers/http_helper.dart';
 import 'package:USFP/theme/colors.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:toast/toast.dart';
 
 class CreatBudgetPage extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class CreatBudgetPage extends StatefulWidget {
 }
 
 class _CreatBudgetPageState extends State<CreatBudgetPage> {
+  final saveKey = GlobalKey<FormState>();
   int activeCategory = 0;
   int activeDay = 3;
   TextEditingController _budgetName = TextEditingController();
@@ -23,7 +25,7 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0),
         child: Container(
-          decoration: BoxDecoration(color: white, boxShadow: [
+          decoration: BoxDecoration(color: primary, boxShadow: [
             BoxShadow(
               color: grey.withOpacity(0.01),
               spreadRadius: 10,
@@ -51,7 +53,7 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: black),
+                          color: white),
                     ),
                   ],
                 ),
@@ -89,11 +91,15 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
               child: Row(
                   children: List.generate(categories.length, (index) {
                 return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      activeCategory = index;
-                    });
-                  },
+                  onTap: index != 2
+                      ? () {
+                          setState(() {
+                            activeCategory = index;
+                          });
+                        }
+                      : () {
+                          Toast.show('Not Available Now', context, duration: 5);
+                        },
                   child: Padding(
                     padding: const EdgeInsets.only(
                       left: 10,
@@ -137,6 +143,9 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
                                   child: Image.asset(
                                     categories[index]['icon'],
                                     width: 30,
+                                    color: index == 2
+                                        ? Colors.grey.withOpacity(.4)
+                                        : null,
                                     height: 30,
                                     fit: BoxFit.contain,
                                   ),
@@ -144,8 +153,11 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
                             Text(
                               categories[index]['name'],
                               style: TextStyle(
+                                color: index == 2
+                                    ? Colors.grey.withOpacity(.4)
+                                    : null,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                                fontSize: 16,
                               ),
                             )
                           ],
@@ -158,98 +170,118 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
             ),
           ),
           SizedBox(
-            height: 50,
+            height: 30,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: activeCategory == 0
-                ? Container(
-                    width: double.infinity,
-                    height: 250,
-                    decoration: BoxDecoration(
-                        color: white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: grey.withOpacity(0.01),
-                            spreadRadius: 10,
-                            blurRadius: 3,
-                            // changes position of shadow
-                          ),
-                        ]),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Ammount",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13,
-                              color: Color(0xff67727d),
+                ? Form(
+                    key: saveKey,
+                    child: Container(
+                      width: double.infinity,
+                      height: 250,
+                      decoration: BoxDecoration(
+                          color: white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: grey.withOpacity(0.01),
+                              spreadRadius: 10,
+                              blurRadius: 3,
+                              // changes position of shadow
                             ),
-                          ),
-                          TextField(
-                            controller: _budgetName,
-                            cursorColor: black,
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: black),
-                            decoration: InputDecoration(
-                                hintText: "Enter Ammount",
-                                border: UnderlineInputBorder()),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          ]),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: (size.width - 140),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Phone Number",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 13,
-                                          color: Color(0xff67727d)),
-                                    ),
-                                    TextField(
-                                      controller: _budgetPrice,
-                                      cursorColor: black,
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
-                                          color: black),
-                                      decoration: InputDecoration(
-                                          hintText: "Enter Mobile Number",
-                                          border: UnderlineInputBorder()),
-                                    ),
-                                  ],
+                              Text(
+                                "Ammount",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: Color(0xff67727d),
                                 ),
+                              ),
+                              TextFormField(
+                                controller: _budgetName,
+                                validator: (x) {
+                                  if (double.tryParse(x) != null) {
+                                    if (double.tryParse(x) < 500) {
+                                      return 'Save above 500';
+                                    } else {
+                                      return null;
+                                    }
+                                  } else {
+                                    return 'Required';
+                                  }
+                                },
+                                cursorColor: black,
+                                keyboardType: TextInputType.number,
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: black),
+                                decoration: InputDecoration(
+                                    hintText: "Enter Ammount",
+                                    border: UnderlineInputBorder()),
                               ),
                               SizedBox(
-                                width: 20,
+                                height: 20,
                               ),
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    color: primary,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  color: white,
-                                ),
+                              Text(
+                                "Phone Number",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 13,
+                                    color: Color(0xff67727d)),
                               ),
+                              TextFormField(
+                                controller: _budgetPrice,
+                                keyboardType: TextInputType.number,
+                                validator: (f) {
+                                  if ((f.length > 10 && !f.startsWith("+")) ||
+                                      f.length < 10) {
+                                    return 'Enter Correct Number';
+                                  } else if (f.startsWith('+256704') ||
+                                      f.startsWith('+25675') ||
+                                      f.startsWith('+25674') ||
+                                      f.startsWith('075') ||
+                                      f.startsWith('070') ||
+                                      f.startsWith('074')) {
+                                    return 'Number Not yet Supported';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                cursorColor: black,
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: black),
+                                decoration: InputDecoration(
+                                    hintText: "Enter Mobile Number",
+                                    border: UnderlineInputBorder()),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              MaterialButton(
+                                color: primary,
+                                onPressed: () {
+                                  if (saveKey.currentState.validate()) {
+                                    deposit(_budgetName.text);
+                                  }
+                                },
+                                textColor: Colors.white,
+                                child: Text("Make Saving"),
+                              )
                             ],
-                          )
-                        ],
+                          ),
+                        ),
                       ),
                     ),
                   )
@@ -282,6 +314,7 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
                               ),
                               TextField(
                                 // controller: _budgetName,
+                                keyboardType: TextInputType.number,
                                 cursorColor: black,
                                 style: TextStyle(
                                     fontSize: 17,
@@ -327,8 +360,7 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
                               ),
                               Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:
-                                      List.generate(interest.length, (index) {
+                                  children: List.generate(1, (index) {
                                     return GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -389,15 +421,6 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
                               SizedBox(
                                 height: 10,
                               ),
-                              // _budgetPrice.text != null
-                              //     ? Text(
-                              //         "You will pay UGX ${_budgetPrice.text} And Interest of UGX${double.parse(_budgetPrice.text) * double.parse(interest[activeDay]['rate'])}",
-                              //         style: TextStyle(
-                              //             fontWeight: FontWeight.w500,
-                              //             fontSize: 13,
-                              //             color: Color(0xff67727d)),
-                              //       )
-                              //     : Text(''),
                               SizedBox(
                                 height: 20,
                               ),
@@ -407,16 +430,6 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
                                 textColor: Colors.white,
                                 child: Text("Request Loan"),
                               )
-
-                              // Container(
-                              //   height: 50,
-                              //   decoration: BoxDecoration(
-                              //       color: primary,
-                              //       borderRadius: BorderRadius.circular(10)),
-                              //   child: Center(
-                              //     child: Text('Request Loan'),
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),
@@ -462,53 +475,32 @@ class _CreatBudgetPageState extends State<CreatBudgetPage> {
                               SizedBox(
                                 height: 20,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    width: (size.width - 140),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Phone Number",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13,
-                                              color: Color(0xff67727d)),
-                                        ),
-                                        TextField(
-                                          controller: _budgetPrice,
-                                          cursorColor: black,
-                                          style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold,
-                                              color: black),
-                                          decoration: InputDecoration(
-                                              hintText: "Enter Mobile Number",
-                                              border: UnderlineInputBorder()),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        color: primary,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Icon(
-                                      Icons.arrow_forward,
-                                      color: white,
-                                    ),
-                                  ),
-                                ],
+                              Text(
+                                "Phone Number",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 13,
+                                    color: Color(0xff67727d)),
+                              ),
+                              TextField(
+                                controller: _budgetPrice,
+                                cursorColor: black,
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: black),
+                                decoration: InputDecoration(
+                                    hintText: "Enter Mobile Number",
+                                    border: UnderlineInputBorder()),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              MaterialButton(
+                                color: primary,
+                                onPressed: () {},
+                                textColor: Colors.white,
+                                child: Text("Make Saving"),
                               )
                             ],
                           ),

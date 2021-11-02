@@ -8,15 +8,15 @@ List days = [
   {"label": "Sat", "day": "4"},
 ];
 List months = [
-  {"label": "2021", "day": "Jan"},
-  {"label": "2021", "day": "Feb"},
-  {"label": "2021", "day": "Mar"},
-  {"label": "2021", "day": "Apr"},
-  {"label": "2021", "day": "May"},
-  {"label": "2021", "day": "Jun"},
+  {"label": "2021", "month": "Jan"},
+  {"label": "2021", "month": "Feb"},
+  {"label": "2021", "month": "Mar"},
+  {"label": "2021", "month": "Apr"},
+  {"label": "2021", "month": "May"},
+  {"label": "2021", "month": "Jun"},
 ];
 List interest = [
-  {"period": "1-3 Weeks", "rate": "0.6"},
+  {"period": "1 Month", "rate": "0.6"},
   {"period": "1-3 Months", "rate": "0.4"},
   {"period": "4-7 Months", "rate": "0.3"},
   {"period": "1 Years", "rate": "0.2"},
