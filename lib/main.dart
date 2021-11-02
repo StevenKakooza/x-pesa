@@ -1,3 +1,5 @@
+import 'package:USFP/helpers/shared_prefs.dart';
+import 'package:USFP/pages/onboarding.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +10,7 @@ import 'theme/colors.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
+  var x = Prefs.prefs;
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) => runApp(MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -18,6 +21,6 @@ void main() {
               accentColor: secondary,
               backgroundColor: grey,
             ),
-            home: RootApp(),
+            home: x.firstOpen ? OnBoarding() : RootApp(),
           )));
 }

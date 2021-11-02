@@ -1,17 +1,17 @@
 const List intro = [
   {
     "details":
-        "Saving is one of the thing we need in our daily lives, it really atters and every one need it, We really Need It.",
-    "image": 'assets/images/kakooza.JPG',
+        "Save Conviniently anytime anyhere and make your money ork for you more interest.",
+    "image": 'assets/images/shoes.jpg',
   },
   {
     "details":
-        "This is a demo text of what the user will see on the first launch of the application and Yeah thats ho it look like!",
-    "image": 'assets/images/ssc.png',
+        "Easily Get a loan with a few steps and in the shortest time posible, No Colateral Security Needed.",
+    "image": 'assets/images/rendered.png',
   },
   {
     "details":
         "Saving is one of the thing we need in our daily lives, it really atters and every one need it, We Really Need It.",
-    "image": 'assets/images/backGround2.png',
+    "image": 'assets/images/coloredicon.png',
   }
 ];

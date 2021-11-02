@@ -1,3 +1,4 @@
+import 'package:USFP/helpers/db_conn.dart';
 import 'package:USFP/theme/colors.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -65,6 +66,7 @@ class _RootAppState extends State<RootApp> {
 
   @override
   void initState() {
+    var xp = DBProvider.db.database;
     super.initState();
 
     final FirebaseMessaging _fcm = FirebaseMessaging.instance;

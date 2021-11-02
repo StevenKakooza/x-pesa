@@ -5,14 +5,13 @@ class Prefs extends ChangeNotifier {
   Prefs._();
   static final Prefs prefs = Prefs._();
 
-  String devName;
-  bool firstOpen;
+  // String devName;
+  bool firstOpen = true;
   ftOpen() async {
-    devName = "notRegistered @${DateTime.now().toString()}";
-
+    //  devName = "notRegistered @${DateTime.now().toString()}";
     SharedPreferences prefs = await SharedPreferences.getInstance();
     firstOpen = prefs.getBool('fOpen') ?? true;
-    prefs.setBool('fOpen', false);
-    prefs.setInt('abv18', 1);
+    //prefs.setBool('fOpen', false);
+    return firstOpen;
   }
 }
